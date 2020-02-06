@@ -9,14 +9,25 @@ classdef ann < handle
     learning_rate = 1;
 
     best_weights = {};
+
+    is_bias = 0;
+
    end
    methods
-   	    function self = ann(weight_type,varargin)
+   	    function self = ann(weight_type,is_bias,varargin)
         	self.no_input = varargin{1};
         	self.no_hidden = varargin(2:end-1);
         	self.no_output = varargin{end}; 
 
           self.no_neurons = varargin;
+
+          if(strcmp(is_bias,"bias"))
+            self.is_bias = 1;
+            for i = 1:numel(self.no_neurons)-1
+              %do not add bias inpt to the output layer
+              self.no_neurons{i} = self.no_neurons{i} + 1;
+            end
+          end
 
           self.no_layer = self.no_layer + numel(self.no_hidden); 
           
@@ -25,13 +36,14 @@ classdef ann < handle
 
           if(strcmp(weight_type,'random'))
             for i = 1:self.no_layer-1
-              self.weights{i} = rand(self.no_neurons{i},self.no_neurons{i+1});
+              self.weights{i} = rand(self.no_neurons{i},self.no_neurons{i+1})./self.no_layer;
             end
           elseif(strcmp(weight_type,'zeros'))
             for i = 1:self.no_layer-1
               self.weights{i} = zeros(self.no_neurons{i},self.no_neurons{i+1});
             end            
           end
+          celldisp(self.weights);
         end
 
         function set_weights(self,w)
@@ -78,11 +90,23 @@ classdef ann < handle
           inputs = {In};
           outputs = {In};
 
+
+          if(self.is_bias)
+            inputs{1}(end+1,:) = 1;
+            outputs{1}(end+1,:) = 1;
+          end
+
           for i = 1:self.no_layer-1
             %weights{i} = zeros(self.no_neurons{i},self.no_neurons{i+1});
             inputs{i+1} = transpose(self.weights{i})*outputs{i};
+            if(self.is_bias)
+              inputs{i+1}(end,:) = 1; 
+            end
             outputs{i+1} = self.activation(inputs{i+1});
+            
           end
+
+
 
           if(nargout == 1)
             inputs = outputs{end};

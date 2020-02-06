@@ -1,5 +1,5 @@
 clc; close all;clear all;
-an = ann('random',2,2,1);
+an = ann('random','bias',2,2,1);
 
 %&[in,out] = an.feedforward([1;0]);
 

@@ -1,11 +1,12 @@
-clc; close all;clear all;
-an = ann('random',1,5,1);
+clc; close all; clear all;
+an = ann('random','bias',1,10,1);
 
 %1-5-1 p = 5 için
 %weights ={[-2.6786   28.4893    6.9116    6.9105   -6.7219],[-85.4954;318.2934;-156.7686;-156.2467;80.2493]};
 
 
 %1-5-1 p = 10
+%{
 weights = {[-1.6231   27.6599   21.5158    7.9409   -4.3848],
 [
   -46.6677
@@ -19,12 +20,14 @@ weights = {[-1.6231   27.6599   21.5158    7.9409   -4.3848],
 
 an.set_weights(weights)
 
+%}
+
 %&[in,out] = an.feedforward([1;0]);
 
 %tr_inputs = {[0;0],[0;1],[1;0],[1;1]};
 %tr_outputs = {[1],[0],[0],[1]};
 
-num = 10;
+num = 7;
 
 in_ = linspace(0,1,num);
 out_ = (1+sin(in_*2*pi))*0.5;
@@ -33,7 +36,7 @@ out_ = (1+sin(in_*2*pi))*0.5;
 tr_inputs = {};
 tr_outputs = {};
 
-an.learning_rate = 0.8;
+an.learning_rate =0.1;
 
 for i = 1:num
 	tr_inputs{end+1} = [in_(i)];
@@ -45,7 +48,7 @@ end
 %tr_inputs = {[1;1]};
 %tr_outputs = {[0]};
 
-an.backpropagation(tr_inputs,tr_outputs,-1,0.1);
+an.backpropagation(tr_inputs,tr_outputs,-1,0.18);
 
 %[out] = an.feedforward([0;0])
 %[out] = an.feedforward([0;1])
@@ -62,7 +65,7 @@ plot(in_,out_,'-o')
 hold on
 plot(in_,calc_outs,'-o')
 legend({'Real','Calc'})
-max(abs(out_ - calc_outs))
+max(abs(out_ - calc_outs));
 
 
 % ns =
